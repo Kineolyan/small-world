@@ -7,7 +7,7 @@ class Automate:
       self,
       predicate=(lambda e: inspect.ismethod(e) and getattr(e, 'automated', False)))
     for name, method in automated_methods:
-      self.actions[name] = (lambda a: method())
+      self.actions[name] = (lambda a, world: method(world))
 
 def automate_method(view):
   view.automated = True

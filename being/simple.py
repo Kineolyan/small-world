@@ -22,27 +22,35 @@ BEARINGS = [head_north, head_east, head_south, head_west]
 class Being(Automate):
   def __init__(self):
     Automate.__init__(self)
-
     self.position = (0, 0)
     self.bearing = NORTH
-    # self.actions["say-hello"] = (lambda b: b.say_hello())
-    # self.actions["advance"] = (lambda b: b.advance())
+    self.strength = 10
+
+  def gain_strength(self, count):
+    self.strength += count
+    print "I feel powerful!!"
 
   def execute(self, action):
-    self.actions[action](self)
+    self.actions[action](self, None)
+
+  def do(self, world, action):
+    self.actions[action](self, world)
 
   @automate_method
-  def say_hello(self):
+  def say_hello(self, world = None):
     print "Hello world"
 
-  def advance(self):
+  @automate_method
+  def advance(self, world):
     move = BEARINGS[self.bearing]
     self.position = move(self.position)
 
-  def turn_right(self):
+  @automate_method
+  def turn_right(self, world = None):
       self.bearing = (self.bearing + 1) % len(BEARINGS)
 
-  def turn_left(self):
+  @automate_method
+  def turn_left(self, world = None):
       new_bearing = self.bearing - 1
       if new_bearing < 0:
           new_bearing = new_bearing + len(BEARINGS)
