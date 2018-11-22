@@ -30,20 +30,16 @@ class Being(Automate):
     self.strength += count
     print "I feel powerful!!"
 
-  def execute(self, action):
-    self.actions[action](self, None)
-
-  def do(self, world, action):
-    self.actions[action](self, world)
-
   @automate_method
   def say_hello(self, world = None):
     print "Hello world"
 
-  @automate_method
-  def advance(self, world):
+  def next_position(self):
     move = BEARINGS[self.bearing]
-    self.position = move(self.position)
+    return move(self.position)
+
+  def advance(self):
+    self.position = self.next_position()
 
   @automate_method
   def turn_right(self, world = None):
