@@ -3,7 +3,8 @@ from world.world import World
 from world.meat import Meat
 from event.food import create_meat
 import recipes
-from ngin.life import LifeEngine
+from ngin.life import LifeEngine, Context
+from feed.log import log
 
 def create_being():
   b = being.Being()
@@ -15,24 +16,24 @@ def create_being():
 def manual():
   b = create_being()
   b.say_hello(None)
-  b._execute('say_hello')
+  b._do('say_hello', None)
 
   w = World()
   w.add_item((1, 3), Meat(3))
 
   while b.bearing != being.NORTH: b.turn_left()
   for _ in range(3): b.advance()
-  b._do(w, 'eat')
+  b._do('eat', Context(b, w, log))
   b.turn_right()
   b.advance()
-  b._do(w, 'eat') # Eat again this time
+  b._do('eat', Context(b, w, log)) # Eat again this time
   assert w.get((1, 3)) == None
 
 def automate():
   w = World()
   b = create_being()
-  le = LifeEngine(world = w, beings = [b], events = [create_meat])
-  for _ in range(10):
+  le = LifeEngine(world = w, beings = [b], events = [create_meat], feed = log)
+  for _ in range(100):
     le.run_cycle()
 
 if __name__ == "__main__":
